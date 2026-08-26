@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07131f">
+  <meta name="description" content="Частота 13 — атмосферная сюжетная игра о последнем эфире затопленного города.">
+  <title>Частота 13: Последний эфир</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="weather" aria-hidden="true"><span></span><span></span><span></span></div>
+  <main class="game-shell" id="game">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">13</span>
+        <div><p>Интерактивная история</p><h1>Последний эфир</h1></div>
+      </div>
+      <button class="icon-button" id="pauseButton" type="button" aria-label="Поставить игру на паузу" disabled>
+        <span aria-hidden="true">Ⅱ</span><span class="button-label">Пауза</span>
+      </button>
+    </header>
+
+    <section class="status-panel" aria-label="Состояние экспедиции">
+      <div class="status-item"><span>Доверие</span><div class="meter"><i id="trustMeter"></i></div><b id="trustValue">2/5</b></div>
+      <div class="status-item"><span>Сигнал</span><div class="meter signal"><i id="signalMeter"></i></div><b id="signalValue">3/5</b></div>
+      <div class="status-item time"><span>До прилива</span><b id="timeValue">6 мин</b></div>
+      <div class="progress" aria-label="Прогресс истории"><i id="progressBar"></i></div>
+    </section>
+
+    <section class="stage" aria-live="polite">
+      <div class="skyline skyline-back" aria-hidden="true"></div>
+      <div class="skyline skyline-front" aria-hidden="true"></div>
+      <div class="beacon" aria-hidden="true"><span class="beam"></span><span class="lamp"></span><span class="tower"></span></div>
+
+      <article class="character character-lada" id="ladaCard" aria-label="Лада, инженер маяка">
+        <div class="portrait lada"><span class="hair"></span><span class="face"><i></i><i></i></span><span class="collar"></span></div>
+        <div class="character-tag"><strong>Лада</strong><small>инженер маяка</small></div>
+      </article>
+      <article class="character character-sever" id="severCard" aria-label="Север, городской курьер">
+        <div class="portrait sever"><span class="hood"></span><span class="face"><i></i><i></i></span><span class="scarf"></span></div>
+        <div class="character-tag"><strong>Север</strong><small>курьер нижних улиц</small></div>
+      </article>
+
+      <div class="radio-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+      <section class="dialogue-card" id="dialogueCard">
+        <div class="scene-label"><span id="sceneNumber">Пролог</span><span class="live-dot">в эфире</span></div>
+        <div class="speaker-row"><span id="speakerName">Диспетчерская запись</span><span id="playerRole"></span></div>
+        <p class="dialogue-text" id="dialogueText">В полночь затопленный город слышит голос на запрещённой частоте.</p>
+        <div class="choices" id="choices"></div>
+      </section>
+    </section>
+
+    <footer class="hintbar">
+      <span><kbd>1</kbd>–<kbd>3</kbd> выбрать реплику</span>
+      <span><kbd>Esc</kbd> пауза</span>
+      <button id="restartButton" type="button">↻ Начать заново</button>
+    </footer>
+  </main>
+
+  <div class="overlay active" id="startOverlay" role="dialog" aria-modal="true" aria-labelledby="startTitle">
+    <div class="overlay-card start-card">
+      <p class="eyebrow">Город тонет. Радио ещё работает.</p>
+      <h2 id="startTitle">Частота <em>13</em></h2>
+      <p>Год назад маяк погас после катастрофы. Сегодня город снова тонет, и только двое могут вернуть безопасный свет: инженер в башне и курьер с последней катушкой.</p>
+      <div class="mission"><span>Ваша задача</span><strong>Провести их через ночь и решить, какой сигнал услышит город.</strong></div>
+      <button class="primary-button" id="startButton" type="button">Узнать, что случилось <span>→</span></button>
+      <small>Наушники добавят атмосферы · Игра сохраняет только текущий сеанс</small>
+    </div>
+  </div>
+
+  <div class="overlay" id="prologueOverlay" role="dialog" aria-modal="true" aria-labelledby="prologueTitle">
+    <div class="overlay-card prologue-card">
+      <div class="prologue-art" id="prologueArt" aria-hidden="true"><span id="prologueSymbol">✕</span><i></i><i></i><i></i></div>
+      <div class="prologue-copy">
+        <p class="eyebrow" id="prologueDate">Год назад</p>
+        <h2 id="prologueTitle">Свет стал ловушкой</h2>
+        <p id="prologueText"></p>
+        <div class="story-fact"><span>Что важно</span><strong id="prologueFact"></strong></div>
+        <div class="prologue-controls">
+          <div class="story-dots" id="storyDots" aria-label="Прогресс предыстории"></div>
+          <button class="primary-button" id="prologueButton" type="button">Дальше <span>→</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="pauseOverlay" role="dialog" aria-modal="true" aria-labelledby="pauseTitle">
+    <div class="overlay-card compact-card"><p class="eyebrow">Связь удерживается</p><h2 id="pauseTitle">Эфир на паузе</h2><p>Прилив подождёт, пока вы вернётесь.</p><button class="primary-button" id="resumeButton" type="button">Продолжить <span>▶</span></button></div>
+  </div>
+
+  <div class="overlay" id="endingOverlay" role="dialog" aria-modal="true" aria-labelledby="endingTitle">
+    <div class="overlay-card ending-card"><p class="eyebrow" id="endingKicker">Концовка</p><div class="ending-symbol" id="endingSymbol">✦</div><h2 id="endingTitle">Рассвет на двоих</h2><p id="endingText"></p><div class="route-summary" id="routeSummary"></div><button class="primary-button" id="endingRestartButton" type="button">Изменить историю <span>↻</span></button></div>
+  </div>
+
+  <script type="module" src="game.js"></script>
+</body>
+</html>
